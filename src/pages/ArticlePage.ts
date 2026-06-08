@@ -9,6 +9,11 @@ export class ArticlePage extends BasePage {
   readonly commentBox: Locator = this.page.getByPlaceholder("Write a comment...");
   readonly postCommentButton: Locator = this.page.getByRole("button", { name: "Post Comment" });
 
+  // Social buttons (shown when viewing another author's article). Each renders
+  // twice (top + bottom); we drive the first.
+  readonly favoriteButton: Locator = this.page.locator("button.btn-outline-primary").first();
+  readonly followButton: Locator = this.page.locator("button.action-btn").first();
+
   /** A comment card identified by its text body. */
   comment(text: string): Locator {
     return this.page.locator(".card", { hasText: text });
@@ -27,6 +32,14 @@ export class ArticlePage extends BasePage {
   async deleteArticle(): Promise<void> {
     this.page.once("dialog", (dialog) => dialog.accept());
     await this.deleteArticleButton.click();
+  }
+
+  async favorite(): Promise<void> {
+    await this.favoriteButton.click();
+  }
+
+  async follow(): Promise<void> {
+    await this.followButton.click();
   }
 
   async postComment(text: string): Promise<void> {

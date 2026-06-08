@@ -18,6 +18,8 @@ type Fixtures = {
   loggedInUser: Account;
   /** An article created via API by `loggedInUser` (precondition for edit/comments). */
   article: Article;
+  /** An article authored by a DIFFERENT user (so follow/favorite buttons show). */
+  othersArticle: { article: Article; author: Account };
 
   // --- page objects ---
   registerPage: RegisterPage;
@@ -52,6 +54,12 @@ export const test = base.extend<Fixtures>({
 
   article: async ({ api, loggedInUser }, use) => {
     await use(await api.createArticle(loggedInUser.token, articleData()));
+  },
+
+  othersArticle: async ({ api }, use) => {
+    const author = await api.register(uniqueUser());
+    const article = await api.createArticle(author.token, articleData());
+    await use({ article, author });
   },
 
   registerPage: async ({ page }, use) => {
