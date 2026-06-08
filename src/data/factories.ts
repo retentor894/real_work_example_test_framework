@@ -22,7 +22,10 @@ export function articleData(overrides: Partial<{ title: string; description: str
     title: `QA Article ${id}`,
     description: `Automated E2E article ${id}`,
     body: `Body of the automated article ${id}.`,
-    tagList: ["qa", "e2e"],
+    // Unique per article on purpose: the backend has a race creating a brand-new
+    // *shared* tag concurrently (it returns 500 on the losing requests). A unique
+    // tag means no two parallel creates ever race to create the same new tag.
+    tagList: [`qa-e2e-${id}`],
     ...overrides,
   };
 }

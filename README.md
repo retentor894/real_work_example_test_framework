@@ -118,3 +118,8 @@ on any pre-seeded data.
   `window.confirm`; the page objects accept the dialog before clicking.
 - **Seeded users can't log in** — the DB seeders bypass the password-hashing hook,
   so their passwords are stored in plaintext. Another reason tests self-register.
+- **Backend race on tag creation** — creating several articles in parallel that
+  share a *brand-new* tag makes the losing requests fail with `500 "Validation
+  error"` (the tag's unique constraint isn't handled under concurrency). Reproduced
+  with 6 concurrent creates → 5×500, 1×201. The suite sidesteps it by giving each
+  article a **unique tag** (`src/data/factories.ts`); worth flagging as a real bug.
