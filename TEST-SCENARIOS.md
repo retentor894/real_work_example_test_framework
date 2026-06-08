@@ -1,6 +1,6 @@
 # E2E Test Scenarios — Conduit (RealWorld)
 
-Three user flows, 8 scenarios. Each ID maps 1:1 to a test in `tests/`.
+Four user flows, 10 scenarios. Each ID maps 1:1 to a test in `tests/`.
 
 ## Authentication — `tests/auth.spec.ts`
 
@@ -24,3 +24,10 @@ Three user flows, 8 scenarios. Each ID maps 1:1 to a test in `tests/`.
 |----|----------|--------------|------------|-----------------|
 | CMT-001 | Post a comment | Logged-in user + existing article | Open article → write comment → Post Comment | The comment appears in the list |
 | CMT-002 | Delete a comment | A comment the user just posted | Delete the comment (confirm) | The comment disappears from the list |
+
+## Social: favorite & follow — `tests/social.spec.ts`
+
+| ID | Scenario | Precondition | Steps (UI) | Expected result |
+|----|----------|--------------|------------|-----------------|
+| SOC-001 | Favorite an article | Logged-in user + an article by another author | Open the article → click Favorite | Favorites count goes 0 → 1; button becomes active |
+| SOC-002 | Follow an author | Logged-in user + an article by another author | Open the article → click Follow | Button switches from "Follow" to "Unfollow" |

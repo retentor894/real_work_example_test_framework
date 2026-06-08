@@ -1,7 +1,7 @@
 # Conduit (RealWorld) — E2E Test Suite (Part 2)
 
 End-to-end tests for the [Conduit RealWorld app](https://github.com/TonyMckes/conduit-realworld-example-app),
-built with **Playwright** using the **Page Object Model**. Three user flows, 8
+built with **Playwright** using the **Page Object Model**. Four user flows, 10
 scenarios — see [`TEST-SCENARIOS.md`](./TEST-SCENARIOS.md).
 
 ## Requirements
@@ -86,17 +86,17 @@ await expect(navbar.userMenu(credentials.username)).toBeVisible();
 
 ## Coverage rationale
 
-**What I focused on, and why.** I picked the three flows that carry the most user
-value and risk: **authentication** (gates everything), the **article lifecycle**
-(full create→edit→delete, the core domain), and **comments** (a nested,
-auth-gated CRUD). Together they cover the primary read/write paths a real user
-takes.
+**What I focused on, and why.** I picked the flows that carry the most user value
+and risk: **authentication** (gates everything), the **article lifecycle** (full
+create→edit→delete, the core domain), **comments** (a nested, auth-gated CRUD), and
+the **social** interactions (favorite an article, follow an author — the
+relationship/state toggles the app is built around). Together they cover the
+primary read/write paths a real user takes.
 
-**What I left out, and why.** Follow/favorite (social) and profile/settings — they
-are lower-risk and would mostly repeat the same patterns; I'd add them next using
-the existing page objects. No visual or accessibility testing (out of scope per
-the brief), and no exhaustive form-validation matrix (better suited to API-level
-tests).
+**What I left out, and why.** Profile/settings editing — lower-risk and mostly a
+repeat of the same form patterns; I'd add it next using the existing page objects.
+No visual or accessibility testing (out of scope per the brief), and no exhaustive
+form-validation matrix (better suited to API-level tests).
 
 **Assumptions.** The app is reachable at `BASE_URL`/`API_URL`; registration via
 the API hashes passwords correctly (the UI flow relies on it). Tests don't depend
