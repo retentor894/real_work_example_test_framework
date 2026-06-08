@@ -19,7 +19,8 @@ npm install
 npx playwright install chromium
 ```
 
-**Against a local app** (frontend on `:3000`, backend on `:3001`):
+**Against a local app — the reliable path for a full green run** (frontend on
+`:3000`, backend on `:3001`; see the mock repo's `SETUP-GUIDE.md` to start Conduit):
 
 ```bash
 npm test
@@ -27,16 +28,23 @@ npm run test:ui     # interactive runner
 npm run report      # open the HTML report
 ```
 
-**Against the live demo** (override both the UI and API base URLs):
+**Against any environment** — point with a single variable; the API base is derived
+as `<BASE_URL>/api` (overridable with `API_URL`):
 
 ```bash
-BASE_URL=https://conduit-realworld-example-app.fly.dev \
-API_URL=https://conduit-realworld-example-app.fly.dev/api \
-  npm test
+BASE_URL=https://your-host npm test
 ```
 
-- `BASE_URL` — the frontend (Playwright `baseURL`).
-- `API_URL` — the backend, used only for fast test-data setup.
+- `BASE_URL` — the frontend (Playwright `baseURL`); also derives the API base.
+- `API_URL` — override only if the backend is on a different origin (e.g. the local
+  `:3000`/`:3001` split, which is the default).
+
+> ⚠️ **The public live demo is heavily rate-limited.** It throttles registration to
+> roughly **5 requests/hour** (HTTP 429, `Retry-After` up to ~1h). Because the suite
+> self-registers its own users (~13 registrations), it **cannot complete against the
+> demo** — a few tests pass, then the rest 429. The `npm run test:demo` script exists
+> for a quick partial smoke or for your own (un-throttled) deployment, but use a
+> **local instance for a full run**.
 
 ## Structure (Page Object Model)
 

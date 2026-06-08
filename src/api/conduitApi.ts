@@ -7,7 +7,13 @@ import type { APIRequestContext } from "@playwright/test";
  *
  * UI behaviour is always exercised through the page objects, never here.
  */
-const API_URL = process.env.API_URL ?? "http://localhost:3001/api";
+// Resolution order:
+//   1. explicit API_URL
+//   2. derived from BASE_URL (same-origin `/api`, as on the hosted demo)
+//   3. local default (the backend runs on a separate port locally)
+const API_URL =
+  process.env.API_URL ??
+  (process.env.BASE_URL ? `${process.env.BASE_URL}/api` : "http://localhost:3001/api");
 
 export interface Credentials {
   username: string;
@@ -37,7 +43,14 @@ export class ConduitApi {
 
   async register(creds: Credentials): Promise<Account> {
     const res = await this.request.post(`${API_URL}/users`, { data: { user: creds } });
-    if (!res.ok()) throw new Error(`register failed: ${res.status()} ${await res.text()}`);
+    if (!res.ok()) {
+      const hint =
+        res.status() === 429
+          ? " — the public demo heavily rate-limits registration (~5/hour, Retry-After up to ~1h);" +
+            " run the suite against a local instance instead (see README)"
+          : "";
+      throw new Error(`register failed: ${res.status()} ${await res.text()}${hint}`);
+    }
     const { user } = await res.json();
     return {
       ...creds,
